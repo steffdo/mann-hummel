@@ -1,0 +1,12 @@
+
+business case
+    a chatbot explains why a produced filter is not airtight
+
+target value
+    scrap indication (part is good or scrap)
+        based on two helium pressure tests with different bar pressures
+
+input data
+    nut screwing torque sensors
+    vibration sensors
+
