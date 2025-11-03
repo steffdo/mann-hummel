@@ -1,0 +1,65 @@
+
+The problem
+    We look at production lines of fuel filters for cars
+    These filters can be leaky, for this at the end of the manufacturing, a pressure leakage test with helium is performed.
+    (Helium is slippy, when it leaks exceeding a certain amount, also liquids, like fuel, will leak)
+    sometimes randomly one part fails
+    sometimes randomly several parts, then ok again
+
+business case
+    Whenever filters start turning out to be leaky, the responsible parameter combinations are communicated to operators
+    Possibly, later, a chatbot explains why a produced filter is not airtight
+
+target value
+    Leak test result (in amount of helium leaked)
+        based on two helium pressure tests with different bar pressures
+
+input data
+    e.g. nut screwing torque sensors
+    e.g. bolt screwing angle
+    e.g. vibration sensors
+    e.g. heat sensors
+    e.g. Pressing force when pressing o-ring into the housing is recorded
+    dmp = digital manufacturing platform
+
+Deep Dive Leak Test
+    When some helium leaks, this still means air tight until a certain leakage level
+    There are two leak tests, one with 0.5 bar and one with 6 bar
+        Generally, the filters must be helium-tight with 6 bar
+        It could be though, that the 6 bar press some rubber bands into leaks, making them tight
+            -> this is why the 0.5 bar test is also done.
+        -> So there can be cases where the 0.5 bar test fails but the 6 bar test succeeds
+
+Production Line Deep Dive
+    Some Ultrasonic welding is done along the process
+    Moving between stations is done manually by operators
+    The line MB1255 (Mercedes Benz parts) will be in our focus
+        a line produces a product family
+        e.g. filter medium differs by country
+    Ein SCADA-System (Supervisory Control and Data Acquisition) ist eine Software- und Hardware-Lösung zur zentralen Überwachung und Steuerung technischer Prozesse in industriellen Umgebungen wie Energie, Wasser oder Fabriken.
+
+Future data extension
+    Injection molding tool inaccuracies can be a determiner, too, thus, such data should be included in the future
+    Image data
+    In the future there will be SAP QM Data included
+
+approach
+    data engineering
+    train model to choose the most relevant subset of columns (e.g. tree-based model)
+    train explainable model to be able to look inside the thinking process
+    create prototype not okay part examples which definitely lead to not okay parts, e.g. by clustering and using the cluster means
+        Cluster NOK parts by three main contributors, cluster means are prototypical examples
+        -> this tells us WAHT a not okay example typically looks like, but not WHY
+    XGBoost
+        SHAP values report the average contribution a feature has on the models outcome, across all possible combination of inputs.
+        https://shap.readthedocs.io/en/latest/
+    Train a very good model as simulator
+        -> play around with inputs and see what happens
+
+Next steps
+    Add data, re-do the entire model training incl. hyperparameter optimization
+    Use SHAP to extract most relevant features (overall, over the entire set of all not okay ("NOK") parts)
+        Perform K-Means clustering of the set of NOK parts
+    Use SHAP to extract most relevant features individually for single NOK parts
+        -> Perform some set intersection-based clustering over these combinations of features, see if you can find clusters here
+    Train very well performing model of any kind do be able to perform simulations with (like artificially playing around with input values, and then taking a look at the output value (OK or NOK))
