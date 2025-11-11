@@ -6,3 +6,4 @@ Unreiner Kraftstoff stellt für moderne Einspritzsysteme eine enorme Belastung d
 
 ![OEM Kraftsofffilter](oem-kraftstofffilter.jpg)
 
+I have a device producing small data files all the time. I want to stream them into a google cloud storatge container.
